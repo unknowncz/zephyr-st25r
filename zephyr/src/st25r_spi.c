@@ -1,8 +1,10 @@
+// Copyright © 2023 Vouch.io LLC
+
 #define DT_DRV_COMPAT st_st25r
 
 #include <string.h>
 #include <zephyr/device.h>
-#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/spi.h>
 #include <zephyr/logging/log.h>
 
 #include "platform.h"
@@ -13,31 +15,19 @@
 
 LOG_MODULE_DECLARE(ST25R);
 
-static struct device *s_spi_dev;
-static struct device *s_cs_dev;
-static gpio_pin_t s_cs_pin;
-
-static void usurp_cs_control(const struct device *dev)
-{
-    struct st25r_device_config *config = dev->config;
-    struct device **pport = &config->spi.config.cs->gpio.port;
-    s_cs_dev = *pport;
-    s_cs_pin = config->spi.config.cs->gpio.pin;
-    *pport = NULL;
-}
+static const struct device *s_spi_dev;
+static const struct gpio_dt_spec *s_cs_dev;
 
 int st25r_spi_init(const struct device *dev)
 {
-    struct st25r_data *data = dev->data;
-    struct st25r_device_config *config = dev->config;
+    const struct st25r_device_config *config = dev->config;
 
-    if (!spi_is_ready(&config->spi)) {
+    if (!spi_is_ready_dt(&config->spi)) {
         LOG_ERR("Bus device is not ready");
         return -ENODEV;
     }
 
-    usurp_cs_control(dev);
-
+    s_cs_dev = &config->spi.config.cs.gpio;
     s_spi_dev = dev;
 
     return 0;
@@ -45,8 +35,8 @@ int st25r_spi_init(const struct device *dev)
 
 static void cs_assert(int dir)
 {
-    if (s_cs_dev && device_is_ready(s_cs_dev)) {
-        gpio_pin_set(s_cs_dev, s_cs_pin, dir);
+    if (s_cs_dev && gpio_is_ready_dt(s_cs_dev)) {
+        gpio_pin_set_dt(s_cs_dev, dir);
     } else {
         LOG_ERR("Unable to access CS");
     }
@@ -71,7 +61,7 @@ void platform_st25r_spi_transceive(const uint8_t *txBuf, uint8_t *rxBuf, uint16_
     const struct st25r_device_config *config = s_spi_dev->config;
     const struct spi_buf tx_buf[1] = {
             {
-                    .buf = txBuf,
+                    .buf = (uint8_t *) txBuf,
                     .len = len,
             },
     };

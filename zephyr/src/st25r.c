@@ -1,3 +1,4 @@
+// Copyright © 2023 Vouch.io LLC
 #define DT_DRV_COMPAT st_st25r
 
 #include <zephyr/init.h>
@@ -40,28 +41,28 @@ static int st25r_init_interface(const struct device *dev)
 
 static int st25r_init(const struct device *dev)
 {
-	struct st25r_data *st25r = dev->data;
-	const struct st25r_device_config *cfg = dev->config;
-
+	
 	if (st25r_init_interface(dev)) {
-	    return -EINVAL;
+		return -EINVAL;
 	}
-
-#ifdef CONFIG_ST25R_TRIGGER
+	
+	#ifdef CONFIG_ST25R_TRIGGER
+	const struct st25r_device_config *cfg = dev->config;
 	if (cfg->int_gpio.port) {
 		if (st25r_init_interrupt(dev) < 0) {
 			LOG_ERR("Failed to initialize interrupts");
 			return -EIO;
 		}
-	}
-#endif /* CONFIG_ST25R_TRIGGER */
-
+	} else {
+	    LOG_WRN("No interrupt pin configured");
+    }
+#endif
 	return 0;
 }
 
 #define ST25R_SPI(inst)                                                                           \
 	(.spi = SPI_DT_SPEC_INST_GET(                                                              \
-		 0, SPI_OP_MODE_MASTER | SPI_MODE_CPHA | SPI_WORD_SET(8), 0),)
+		 0, SPI_OP_MODE_MASTER | SPI_MODE_CPHA | SPI_WORD_SET(8) | SPI_HOLD_ON_CS | SPI_LOCK_ON, 0),)
 
 #define ST25R_I2C(inst) (.i2c = I2C_DT_SPEC_INST_GET(inst),)
 

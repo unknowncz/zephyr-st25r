@@ -31,11 +31,6 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#ifdef STM32L053xx
-#include "stm32l0xx_hal.h"
-#else 
-#include "stm32f4xx_hal.h"
-#endif
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -169,12 +164,12 @@ void platform_st25r_unprotect_comm();
 #define platformTimerCreate( t )                      timerCalculateTimer(t)                        /*!< Create a timer with the given time (ms)     */
 #define platformTimerIsExpired( timer )               timerIsExpired(timer)                         /*!< Checks if the given timer is expired        */
 #define platformTimerDestroy( timer )                                                               /*!< Stop and release the given timer            */
-#define platformDelay( t )                            HAL_Delay( t )                                /*!< Performs a delay for the given time (ms)    */
+#define platformDelay( t )                            k_msleep( t )                                /*!< Performs a delay for the given time (ms)    */
 
 #define platformGetSysTick()                          k_uptime_get()                                /*!< Get System Tick ( 1 tick = 1 ms)            */
 
-void platform_st25r_gloabl_error(const char* file, long line);
-#define platformErrorHandle()                         platform_st25r_gloabl_error(__FILE__,__LINE__) /*!< Global error handler or trap                */
+void platform_st25r_global_error(const char* file, long line);
+#define platformErrorHandle()                         platform_st25r_global_error(__FILE__,__LINE__) /*!< Global error handler or trap                */
 
 void platform_st25r_spi_select();
 void platform_st25r_spi_deselect();

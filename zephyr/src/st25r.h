@@ -1,3 +1,5 @@
+// Copyright © 2023 Vouch.io LLC
+
 #ifndef ST25R_H_
 #define ST25R_H_
 

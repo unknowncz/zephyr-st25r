@@ -1,3 +1,5 @@
+// Copyright © 2023 Vouch.io LLC
+
 #include "platform.h"
 
 #include <zephyr/kernel.h>
@@ -17,7 +19,7 @@ void platform_st25r_unprotect_comm()
     k_mutex_unlock(&platform_st25r_comm_mutex);
 }
 
-void platform_st25r_gloabl_error(const char *file, long line)
+void platform_st25r_global_error(const char *file, long line)
 {
     LOG_ERR("Error at %s:%ld", file, line);
 }
