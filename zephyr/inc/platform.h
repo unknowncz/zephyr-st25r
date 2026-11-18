@@ -65,15 +65,10 @@ extern "C" {
 #define ST25R_SS_PORT            BUS_SPI1_NSS_GPIO_PORT   /*!< GPIO port used for ST25R SPI SS port          */
 
 gpio_pin_t platform_st25r_int_pin();
-struct device *platform_st25r_int_port();
+const struct device *platform_st25r_int_port();
 
-#ifndef RFAL_USE_I2C
 #define ST25R_INT_PIN            platform_st25r_int_pin()   /*!< GPIO pin used for ST25R IRQ                   */
 #define ST25R_INT_PORT           platform_st25r_int_port()  /*!< GPIO port used for ST25R IRQ port             */
-#else
-#define ST25R_INT_PIN            platform_st25r_int_pin()   /*!< GPIO pin used for ST25R IRQ                   */
-#define ST25R_INT_PORT           platform_st25r_int_port()  /*!< GPIO port used for ST25R IRQ port             */
-#endif /* RFAL_USE_I2C */
 #define IRQ_ST25R_EXTI_IRQn      EXTI0_1_IRQn
 
 #ifdef DEFINE_LEDS_AND_BUTTONS
@@ -153,11 +148,11 @@ void platform_st25r_unprotect_comm();
 
 #define platformLedOff( port, pin )                                                                 /*!< Turns the given LED Off                     */
 #define platformLedOn( port, pin )                                                                  /*!< Turns the given LED On                      */
-#define platformLedToogle( port, pin )                                                              /*!< Toogle the given LED                        */
+#define platformLedToggle( port, pin )                                                              /*!< Toggle the given LED                        */
 
 #define platformGpioSet( port, pin )                  gpio_pin_set(port, pin, 1)                    /*!< Turns the given GPIO High                   */
 #define platformGpioClear( port, pin )                gpio_pin_set(port, pin, 0)                    /*!< Turns the given GPIO Low                    */
-#define platformGpioToogle( port, pin )               gpio_pin_toggle(port, pin)                    /*!< Toogles the given GPIO                      */
+#define platformGpioToggle( port, pin )               gpio_pin_toggle(port, pin)                    /*!< Toggles the given GPIO                      */
 #define platformGpioIsHigh( port, pin )               gpio_pin_get(port, pin)                       /*!< Checks if the given LED is High             */
 #define platformGpioIsLow( port, pin )                (!platformGpioIsHigh(port, pin))              /*!< Checks if the given LED is Low              */
 
@@ -206,24 +201,24 @@ extern uint8_t globalCommProtectCnt;                      /* Global Protection C
 ******************************************************************************
 */
 
-#define RFAL_FEATURE_LISTEN_MODE               false      /*!< Enable/Disable RFAL support for Listen Mode                               */
-#define RFAL_FEATURE_WAKEUP_MODE               false      /*!< Enable/Disable RFAL support for the Wake-Up mode                          */
-#define RFAL_FEATURE_LOWPOWER_MODE             false      /*!< Enable/Disable RFAL support for the Low Power mode                        */
+#define RFAL_FEATURE_LISTEN_MODE               true       /*!< Enable/Disable RFAL support for Listen Mode                               */
+#define RFAL_FEATURE_WAKEUP_MODE               true       /*!< Enable/Disable RFAL support for the Wake-Up mode                          */
+#define RFAL_FEATURE_LOWPOWER_MODE             true       /*!< Enable/Disable RFAL support for the Low Power mode                        */
 #define RFAL_FEATURE_NFCA                      true       /*!< Enable/Disable RFAL support for NFC-A (ISO14443A)                         */
-#define RFAL_FEATURE_NFCB                      false      /*!< Enable/Disable RFAL support for NFC-B (ISO14443B)                         */
-#define RFAL_FEATURE_NFCF                      false      /*!< Enable/Disable RFAL support for NFC-F (FeliCa)                            */
-#define RFAL_FEATURE_NFCV                      false      /*!< Enable/Disable RFAL support for NFC-V (ISO15693)                          */
-#define RFAL_FEATURE_T1T                       false      /*!< Enable/Disable RFAL support for T1T (Topaz)                               */
-#define RFAL_FEATURE_T2T                       false      /*!< Enable/Disable RFAL support for T2T                                       */
-#define RFAL_FEATURE_T4T                       false      /*!< Enable/Disable RFAL support for T4T                                       */
+#define RFAL_FEATURE_NFCB                      true       /*!< Enable/Disable RFAL support for NFC-B (ISO14443B)                         */
+#define RFAL_FEATURE_NFCF                      true       /*!< Enable/Disable RFAL support for NFC-F (FeliCa)                            */
+#define RFAL_FEATURE_NFCV                      true       /*!< Enable/Disable RFAL support for NFC-V (ISO15693)                          */
+#define RFAL_FEATURE_T1T                       true       /*!< Enable/Disable RFAL support for T1T (Topaz)                               */
+#define RFAL_FEATURE_T2T                       true       /*!< Enable/Disable RFAL support for T2T                                       */
+#define RFAL_FEATURE_T4T                       true       /*!< Enable/Disable RFAL support for T4T                                       */
 #define RFAL_FEATURE_ST25TB                    false      /*!< Enable/Disable RFAL support for ST25TB                                    */
 #define RFAL_FEATURE_ST25xV                    false      /*!< Enable/Disable RFAL support for  ST25TV/ST25DV                            */
 #define RFAL_FEATURE_DYNAMIC_ANALOG_CONFIG     false      /*!< Enable/Disable Analog Configs to be dynamically updated (RAM)             */
-#define RFAL_FEATURE_DPO                       false      /*!< Enable/Disable RFAL Dynamic Power Output support                          */
+#define RFAL_FEATURE_DPO                       true      /*!< Enable/Disable RFAL Dynamic Power Output support                          */
 #define RFAL_FEATURE_ISO_DEP                   true       /*!< Enable/Disable RFAL support for ISO-DEP (ISO14443-4)                      */
 #define RFAL_FEATURE_ISO_DEP_POLL              true       /*!< Enable/Disable RFAL support for Poller mode (PCD) ISO-DEP (ISO14443-4)    */
-#define RFAL_FEATURE_ISO_DEP_LISTEN            false      /*!< Enable/Disable RFAL support for Listen mode (PICC) ISO-DEP (ISO14443-4)   */
-#define RFAL_FEATURE_NFC_DEP                   false      /*!< Enable/Disable RFAL support for NFC-DEP (NFCIP1/P2P)                      */
+#define RFAL_FEATURE_ISO_DEP_LISTEN            true       /*!< Enable/Disable RFAL support for Listen mode (PICC) ISO-DEP (ISO14443-4)   */
+#define RFAL_FEATURE_NFC_DEP                   true       /*!< Enable/Disable RFAL support for NFC-DEP (NFCIP1/P2P)                      */
 
 #define RFAL_FEATURE_ISO_DEP_IBLOCK_MAX_LEN    256U       /*!< ISO-DEP I-Block max length. Please use values as defined by rfalIsoDepFSx */
 #define RFAL_FEATURE_NFC_DEP_BLOCK_MAX_LEN     254U       /*!< NFC-DEP Block/Payload length. Allowed values: 64, 128, 192, 254           */
