@@ -133,6 +133,11 @@ config ST25R_TRIGGER_OWN_THREAD
 
 endchoice
 
+config ST25R_TRIGGER
+	bool
+
+if ST25R_TRIGGER
+
 config ST25R_THREAD_PRIORITY
 	int "Thread priority"
 	depends on ST25R_TRIGGER_OWN_THREAD
@@ -146,6 +151,8 @@ config ST25R_THREAD_STACK_SIZE
 	default 1024
 	help
 	  Stack size of thread used by the driver to handle interrupts.
+
+endif # ST25R_TRIGGER
 
 endif # ST25R
 
